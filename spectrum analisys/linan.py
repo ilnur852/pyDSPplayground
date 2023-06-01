@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg as la
 
-N = 128
+N = 32
 p = 4
+sRate = 128
 
 #vars 
 pi = np.pi
@@ -51,7 +52,7 @@ for k in range(0, ovs + 1):
     sum2 = 0
     freq_vector = np.zeros(len(noise_eigvects[0]), dtype=np.complex_)
 
-    f = float(k)/ovs
+    f = float(k)/len(noise_eigvects[0])
 
     for i in range(0, len(noise_eigvects[0])):
         freq_vector[i] = np.conjugate(complex(np.cos(2 * pi* i * f), np.sin(2 * pi * i *f))) # steering vector e definition
