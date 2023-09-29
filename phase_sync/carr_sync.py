@@ -47,9 +47,9 @@ class carrier_sync:
             else:
                 pherr = K*copysign(1, qq)*iq/128 - copysign(1, iq)*qq
 
-            Kigen = (pherr * Ki)/2**32 + Kigen
+            Kigen = (pherr * Ki) + Kigen
             Kiacc = Kigen
-            lfout = (pherr * Kp)/2**32 + Kigen
+            lfout = (pherr * Kp) + Kigen
             
             phacc = (phacc + lfout)
 

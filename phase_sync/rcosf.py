@@ -44,18 +44,6 @@ def raised_root_cosine(upsample, num_positive_lobes, alpha):
 
     return h_rrc
 
-def eye_diagram(signal, threshhold, nsamples):
-    i =0
-    scout =0
-    s_eye = np.zeros((len(signal)+2, len(signal)+2))
-    for i in range(len(signal)):
-        if (signal[i] == 0):
-            scout = 0
-        else:
-            scout = scout + 1
-        s_eye[:scout, i] = signal[i:scout+i]
-    return s_eye
-
 if __name__ == "__main__":
     # Global constants
     save_file = False
@@ -94,12 +82,9 @@ if __name__ == "__main__":
             outfile2.write(np.binary_repr(fI, width=12) + "\n")
 
     print(len(dsQ))
-    dsQ_eye = eye_diagram(dsQ, 200, 10000)
-    print('ff')
-    '''plt.subplot(211)
-    plt.plot(dsQ)
-    plt.subplot(212)'''
 
-    plt.plot(dsQ_eye[:, :1000], 'o-')
+    print('ff')
+    plt.plot(dsQ)
+    plt.plot(dsI)
     plt.show()
 

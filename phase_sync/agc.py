@@ -37,14 +37,14 @@ def logariphmic_gc(xi, xq, sps, desired_lvl, alpha):
         yi[i+1] = xi[i] * np.exp(lout_acc)
         yq[i+1] = xq[i] * np.exp(lout_acc)
         if (np.abs(est_lvl[i])>0): 
-            lout = (np.log(desired_lvl + 1) - np.log(est_lvl[i]) + 1)*alpha
+            lout = np.floor((np.log(desired_lvl + 1) - np.log(est_lvl[i]) + 1)*alpha)
         lout_acc = lout + lout_acc
         lc[i] = np.exp(lout_acc)
     return yi, yq, lc
 
 if __name__ == "__main__":
-    num_symbols = 20
-    N = 2000
+    num_symbols = 200
+    N = 20000
 
     # Crate random samples
     x_int = np.random.randint(0, 8, num_symbols)  # 0 to 
@@ -64,8 +64,8 @@ if __name__ == "__main__":
     filts = np.convolve(h, symbols)
     dsQ = np.real(filts)
     dsI = np.imag(filts)
-    dsI = np.append(dsI, dsI/20)
-    dsQ = np.append(dsQ, dsQ/20)
+    #dsI = np.append(dsI, dsI/20)
+    #dsQ = np.append(dsQ, dsQ/20)
     
     gI, gQ, lvl = linear_gc(dsI, dsQ, (N/num_symbols), 10, 0.00001)
     gIl, gQl, lvll = logariphmic_gc(dsI, dsQ, (N/num_symbols), 10, 0.01)
@@ -78,13 +78,13 @@ if __name__ == "__main__":
     plt.ylim(-20, 20)
     plt.plot(gI)
     plt.subplot(614)
-    plt.ylim(-50, 50)
+    plt.ylim(-25, 25)
     plt.plot(gQ)
     plt.subplot(615)
-    plt.ylim(-50, 50)
+    plt.ylim(-25, 25)
     plt.plot(gQl)
     plt.subplot(616)
-    plt.ylim(-50, 50)
+    plt.ylim(-25, 25)
     plt.plot(gIl)
     plt.show()
 
@@ -93,9 +93,6 @@ if __name__ == "__main__":
     plt.subplot(122)
     plt.plot(lvll)
     plt.show()
-    '''
-    plt.plot(gI, gQ, '.')
-    plt.ylim(-20, 20)
-    plt.xlim(-20, 20)
+    
+    plt.scatter(gI, gQ)
     plt.show()
-    '''

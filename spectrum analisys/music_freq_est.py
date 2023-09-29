@@ -5,10 +5,10 @@ from scipy import linalg as la
 #parameters
 N = 1024
 p = 4
-Nfft = 128
+Nfft = 1024
 #vars 
 pi = np.pi
-f1 = 25
+f1 = 50
 f2 = 14
 
 def music_ps_direct(noise_eigvects, N):
@@ -30,47 +30,48 @@ def music_ps_fft(noise_eigvects, N):
         sum1 += (abs(np.fft.fft(noise_eigvects[:, u], N)))**2
     return 1/(sum1[:len(sum1)//2])
 
-#generate sequence
-t = np.linspace(0, 2*pi, num=N)
-x =  - 0.5*np.random.random(N) + np.sin(f1*t) + 0.8*np.cos(f2*t) 
-plt.plot(x)
-plt.show()
+if __name__=="__main__":
+    #generate sequence
+    t = np.linspace(0, 2*pi, num=N)
+    x =  - 0.5*np.random.random(N) + np.sin(f1*t) + 0.8*np.cos(f2*t) 
+    plt.plot(x)
+    plt.show()
 
-fft_x = abs(np.fft.fft(x, Nfft))
-fft_x = fft_x[:len(fft_x)//2]
-plt.plot(fft_x)
-plt.title("Estimation via DFT")
+    fft_x = abs(np.fft.fft(x, Nfft))
+    fft_x = fft_x[:len(fft_x)//2]
+    plt.plot(fft_x)
+    plt.title("Estimation via DFT")
 
-#find autocorrelations
-conj = np.conj(x)
-flip = conj[::-1] 
-acf =  np.convolve(x, flip) #autocorrelation sequence - convotution of time reversal of self
-#construct autocorrelation matrix (Toeplitz)
-Rxx = la.toeplitz(acf)
-#eigendecomposition of Rxx
-v, d = np.linalg.eig(Rxx) # v- eigenvalues , d - corresponding eigenvectors (column vectors - see docs)
-indexes = np.argsort(v)[::-1]
-sort_eigvals = v[indexes] # sorting eigenvalues from greatest to least (retr)
-sort_eigvects = d[:, indexes]
-#separating signal and noise subspace eigenvectors
-s_evects = sort_eigvects[0:p]
-n_evects = sort_eigvects[:, p:len(sort_eigvects)]
-print("length of noise eigenvector", len(n_evects))
+    #find autocorrelations
+    conj = np.conj(x)
+    flip = conj[::-1] 
+    acf =  np.convolve(x, flip) #autocorrelation sequence - convotution of time reversal of self
+    #construct autocorrelation matrix (Toeplitz)
+    Rxx = la.toeplitz(acf)
+    #eigendecomposition of Rxx
+    v, d = np.linalg.eig(Rxx) # v- eigenvalues , d - corresponding eigenvectors (column vectors - see docs)
+    indexes = np.argsort(v)[::-1]
+    sort_eigvals = v[indexes] # sorting eigenvalues from greatest to least (retr)
+    sort_eigvects = d[:, indexes]
+    #separating signal and noise subspace eigenvectors
+    s_evects = sort_eigvects[0:p]
+    n_evects = sort_eigvects[:, p:len(sort_eigvects)]
+    print("length of noise eigenvector", len(n_evects))
 
-Pmusic= music_ps_direct(n_evects, Nfft)
-#Pmusic_fft = music_ps_fft(n_evects ,Nfft)
+    Pmusic= music_ps_direct(n_evects, Nfft)
+    #Pmusic_fft = music_ps_fft(n_evects ,Nfft)
 
-print("frequencies of stimulus", f1, f2)
-print("max's of fft", (np.argsort(fft_x)[::-1][:p//2])*N/Nfft)
-#print("max's of MUSIC (fft)", (np.argsort(Pmusic_fft)[::-1][:p//2])*N/Nfft)
-print("max's of MUSIC (direct)", (np.argsort(Pmusic)[::-1][:p//2])/2)
+    print("frequencies of stimulus", f1, f2)
+    print("max's of fft", (np.argsort(fft_x)[::-1][:p//2])*N/Nfft)
+    #print("max's of MUSIC (fft)", (np.argsort(Pmusic_fft)[::-1][:p//2])*N/Nfft)
+    print("max's of MUSIC (direct)", (np.argsort(Pmusic)[::-1][:p//2])/2)
 
-plt.figure()
-plt.plot(Pmusic)
-plt.title("Estimation via MUSIC (direct)")
+    plt.figure()
+    plt.plot(Pmusic)
+    plt.title("Estimation via MUSIC (direct)")
 
-#plt.figure()
-#plt.plot(Pmusic_fft)
-#plt.title("Estimation via MUSIC (fft)")
+    #plt.figure()
+    #plt.plot(Pmusic_fft)
+    #plt.title("Estimation via MUSIC (fft)")
 
-plt.show()
+    plt.show()

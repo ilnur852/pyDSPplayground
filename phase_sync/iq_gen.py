@@ -19,8 +19,8 @@ outfile1 = open("outQ.txt", "w")
 outfile2 = open("outI.txt", "w")
 
 # Global constants
-num_symbols = 1000
-N = 100000
+num_symbols = 100
+N = 500000
 
 # Crate random samples
 x_int = np.random.randint(0, 8, num_symbols)  # 0 to 3
@@ -33,6 +33,7 @@ plt.plot(np.real(x_symbols), np.imag(x_symbols), '.')
 plt.show()
 # Create sine and cosine waves
 x = np.linspace(0, N / 4, N)
+
 coder_sw = np.sin(x)
 coder_cw = np.cos(x)
 
@@ -41,13 +42,12 @@ symbols = np.zeros(0)
 # repeat symbols for N/num_symbols
 i = 0
 for i in range(num_symbols):
-    symbols = np.append(symbols, np.ones(int(N / num_symbols)) * x_symbols[i])
-
+    symbols = np.append(symbols, np.ones(int(N / num_symbols)) * x_symbols[i]) 
 # Apply mixing
-out_sym = (coder_sw * np.real(symbols) + coder_cw * np.imag(symbols)) * 256
+out_sym = (coder_sw * np.real(symbols) + coder_cw * np.imag(symbols))
 
 # decoder side sine and cosine
-freq_shift = 20
+freq_shift = 50
 x = np.linspace(0, (N / 4 + freq_shift), N)
 decoder_sw = np.sin(x)
 decoder_cw = np.cos(x)
@@ -67,9 +67,10 @@ si = np.zeros(N)
 sq = np.zeros(N)
 
 # dowmsample
-dsQ = downsample(lQ, N, 20)
-dsI = downsample(lI, N, 20)
-
+dsQ = downsample(lQ, N, 50) 
+dsI = downsample(lI, N, 50) 
+#dsQ = lQ
+#dsI = lI
 # Save if necessary
 if save_file:
     for i in range(len(dsQ)):
@@ -89,23 +90,21 @@ complex_sig = dsQ + 1j * dsI
 # Create new carrier sync class instance
 cs = carrier_sync()
 # Apply carrier sync
-NbW = 0.005  # normalized bandwidth
-damp_fctr = 0.707  # dampling factor
-sympsamp = 50  # samples per symbol
+NbW = 25 # normalized bandwidth
+damp_fctr = 1  # dampling factor
+sympsamp = 100  # samples per symbol
 Ki, Kp = cs.calcloopgains(NbW, damp_fctr, sympsamp)
-Ki = Ki
-Kp = Kp
 sout, phase, ev = cs.stepImpl(complex_sig, Ki=Ki, Kp=Kp)
-sout_cordic, phase_cordic, ev_cordic = cs.stepImplcordic(complex_sig, Ki=Ki*2**32, Kp=Kp*2**32)
+sout_cordic, phase_cordic, ev_cordic = cs.stepImplcordic(complex_sig, Ki=Ki, Kp=Kp)
 
-print("Ki is",  Ki, "\n Kp is", Kp)
+print("Ki is", Ki, "\n Kp is", Kp)
 # Plot routine
 
 plt.plot(np.real(complex_sig), np.imag(complex_sig), '.')
 plt.title('RX symbols') 
 plt.grid(True) 
 plt.show()
- 
+
 plt.plot(np.real(sout[3000:5000]), np.imag(sout[3000:5000]), '.')
 plt.title('Phase/carrier estimated using DDS')
 plt.grid(True)
