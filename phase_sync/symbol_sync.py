@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from rcosf import raised_root_cosine as rrc
 from carr_sync import carrier_sync as cs
 
-
 def symsync(signal, K1, K2, sps):
     symcnt = 0
     strobe = 0
@@ -57,6 +56,11 @@ def symsync(signal, K1, K2, sps):
 
     return out , ev
 
+def symsync_lgc(signal, Bn, dn, sps):
+    cs_inst= cs()  
+    K1, K2 = cs_inst.calcloopgains(Bn, dn, sps)
+    return symsync(signal, K1, K2, sps)
+
 def selsample(signal, sps, delay):
     n= 0
     ov = []
@@ -99,12 +103,7 @@ if __name__ == "__main__":
     bsbnd = bsbnd/np.max(bsbnd) + n
     print (sps)
     
-    cs_inst= cs()    
-    Bn = 5
-    dn= 0.707
-    K1, K2 = cs_inst.calcloopgains(Bn, dn, sps)
-    print (K2, K1)
-    ssbsnd, ev = symsync(bsbnd, K1, K2, sps)
+    ssbsnd, ev = symsync_lgc(bsbnd, 0.05, 0.707, sps)
     #select_only = selsample(bsbnd, sps, 14)
 
     print(len(ssbsnd))

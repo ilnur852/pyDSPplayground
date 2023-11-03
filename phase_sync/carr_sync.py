@@ -61,7 +61,7 @@ class carrier_sync:
 
         return output, phcorr, errorv
 
-    def stepImpl(self, input ,Ki, Kp):
+    def stepImpl(input ,Ki, Kp):
         inputC = input
         K = (np.sqrt(2) -1)*32
         output = np.zeros(len(inputC)) + 1j*np.zeros(len(inputC))
@@ -100,3 +100,9 @@ class carrier_sync:
             errorv[k] = pherr
 
         return output, phcorr, errorv
+    
+def carrsync_cordic_lgc(inp, NbW, damp_fctr, sympsamp):
+    cs_inst = carrier_sync()
+    Ki, Kp = cs_inst.calcloopgains(NbW, damp_fctr, sympsamp)
+    return cs_inst.stepImplcordic(inp, Ki, Kp)
+    

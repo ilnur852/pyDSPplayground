@@ -47,7 +47,7 @@ for i in range(num_symbols):
 out_sym = (coder_sw * np.real(symbols) + coder_cw * np.imag(symbols))
 
 # decoder side sine and cosine
-freq_shift = 50
+freq_shift = 1
 x = np.linspace(0, (N / 4 + freq_shift), N)
 decoder_sw = np.sin(x)
 decoder_cw = np.cos(x)
@@ -58,7 +58,7 @@ decoded_I = out_sym * decoder_cw
 
 # filtering using fir
 taps = 25
-f = 0.10
+f = 0.01
 fir = signal.firwin(taps, f)
 lQ = signal.filtfilt(fir, 1.0, decoded_Q)
 lI = signal.filtfilt(fir, 1.0, decoded_I)
