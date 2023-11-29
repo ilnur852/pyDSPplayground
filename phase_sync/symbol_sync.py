@@ -49,11 +49,10 @@ def symsync(signal, K1, K2, sps):
                 vi = vi + K2*ek
                 vn = vp + vi
                 out = np.append(out, (xk + 1j*yk))
+                ev = np.append(ev, ek)
             else: strobecnt = strobecnt + 1
             symcnt = sps/2 -1 - vn
             
-            ev = np.append(ev, ek)
-
     return out , ev
 
 def symsync_lgc(signal, Bn, dn, sps):

@@ -59,7 +59,7 @@ if __name__ == "__main__":
     x0 = 10
     y0 = 0
     theta = 0
-    angles = np.arange(-4*np.pi, 4*np.pi, step=0.1)
+    angles = np.arange(-4*np.pi, 4*np.pi, step=0.314)
     i = 0 
     x = np.zeros(len(angles))
     y = np.zeros(len(angles))

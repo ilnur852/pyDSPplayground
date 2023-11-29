@@ -90,8 +90,8 @@ complex_sig = dsQ + 1j * dsI
 # Create new carrier sync class instance
 cs = carrier_sync()
 # Apply carrier sync
-NbW = 25 # normalized bandwidth
-damp_fctr = 1  # dampling factor
+NbW = .25 # normalized bandwidth
+damp_fctr = .707  # dampling factor
 sympsamp = 100  # samples per symbol
 Ki, Kp = cs.calcloopgains(NbW, damp_fctr, sympsamp)
 sout, phase, ev = cs.stepImpl(complex_sig, Ki=Ki, Kp=Kp)
