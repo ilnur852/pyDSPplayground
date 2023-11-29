@@ -61,7 +61,7 @@ class carrier_sync:
 
         return output, phcorr, errorv
 
-    def stepImpl(input ,Ki, Kp):
+    def stepImpl(self, input ,Ki, Kp):
         inputC = input
         K = (np.sqrt(2) -1)*32
         output = np.zeros(len(inputC)) + 1j*np.zeros(len(inputC))
