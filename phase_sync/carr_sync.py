@@ -106,3 +106,7 @@ def carrsync_cordic_lgc(inp, NbW, damp_fctr, sympsamp):
     Ki, Kp = cs_inst.calcloopgains(NbW, damp_fctr, sympsamp)
     return cs_inst.stepImplcordic(inp, Ki, Kp)
     
+def carrsync_dds_lgc(inp, NbW, damp_fctr, sympsamp):
+    cs_inst = carrier_sync()
+    Ki, Kp = cs_inst.calcloopgains(NbW, damp_fctr, sympsamp)
+    return cs_inst.stepImpl(inp, Ki, Kp)

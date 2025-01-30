@@ -49,7 +49,7 @@ def symsync(signal, K1, K2, sps):
                 vi = vi + K2*ek
                 vn = vp + vi
                 out = np.append(out, (xk + 1j*yk))
-                ev = np.append(ev, ek)
+                ev = np.append(ev, vn)
             else: strobecnt = strobecnt + 1
             symcnt = sps/2 -1 - vn
             

@@ -19,10 +19,10 @@ def raised_root_cosine(upsample, num_positive_lobes, alpha):
     t = (np.arange(N) - N / 2) / upsample
 
     # result vector
-    h_rrc = np.zeros(t.size, dtype=np.float)
+    h_rrc = np.zeros(t.size, dtype=np.float32)
 
     # index for special cases
-    sample_i = np.zeros(t.size, dtype=np.bool)
+    sample_i = np.zeros(t.size, dtype=np.int8)
 
     # deal with special cases
     subi = t == 0

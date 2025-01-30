@@ -19,7 +19,7 @@ outfile1 = open("outQ.txt", "w")
 outfile2 = open("outI.txt", "w")
 
 # Global constants
-num_symbols = 100
+num_symbols = 200
 N = 500000
 
 # Crate random samples

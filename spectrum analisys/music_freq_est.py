@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from scipy import linalg as la
 
 #parameters
-N = 1024
+N = 512
 p = 4
-Nfft = 1024
+Nfft = 4096
 #vars 
 pi = np.pi
-f1 = 50
-f2 = 14
+f1 = 50.23
+f2 = 14.4
 
 def music_ps_direct(noise_eigvects, N):
     #perform MUSIC frequency estimation
@@ -17,12 +17,12 @@ def music_ps_direct(noise_eigvects, N):
     M = len(noise_eigvects[0])
     for f in range(N): # calculate for N number of frequencies 
         freq_vector = np.exp(1j*2*np.pi*f*np.linspace(0, M-1, num=len(noise_eigvects))/M) #M complex exponentials w/ frequences from exp(0) to exp(2*pi*f*(M-1))
-        Pmu_w = 0
+        Pmu_w = 0.0
         for u in range(len(noise_eigvects[1])):
             # calculate power for sigle frequency
             Pmu_w += (abs(np.dot(np.conj(freq_vector), noise_eigvects[:, u])))**2 
         music_pseudospectrum = np.append(music_pseudospectrum, Pmu_w) #construct pseudospectrum via appending values
-    return 1/music_pseudospectrum
+    return 1.0/music_pseudospectrum
 
 def music_ps_fft(noise_eigvects, N):
     sum1 = 0
@@ -33,7 +33,7 @@ def music_ps_fft(noise_eigvects, N):
 if __name__=="__main__":
     #generate sequence
     t = np.linspace(0, 2*pi, num=N)
-    x =  - 0.5*np.random.random(N) + np.sin(f1*t) + 0.8*np.cos(f2*t) 
+    x =  0.5*np.random.random(N) + np.sin(f1*t) + 0.6*np.cos(f2*t) 
     plt.plot(x)
     plt.show()
 
@@ -66,10 +66,11 @@ if __name__=="__main__":
     #print("max's of MUSIC (fft)", (np.argsort(Pmusic_fft)[::-1][:p//2])*N/Nfft)
     print("max's of MUSIC (direct)", (np.argsort(Pmusic)[::-1][:p//2])/2)
 
+    
     plt.figure()
     plt.plot(Pmusic)
     plt.title("Estimation via MUSIC (direct)")
-
+    
     #plt.figure()
     #plt.plot(Pmusic_fft)
     #plt.title("Estimation via MUSIC (fft)")

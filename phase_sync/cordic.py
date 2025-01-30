@@ -8,7 +8,7 @@ def cordic(x0, y0, theta, itnum):
 
     while (theta > np.pi):
         theta = theta - pi*2
-
+    
     if (theta > pi/2):
         theta = theta - pi
         x0 = x0
@@ -20,11 +20,11 @@ def cordic(x0, y0, theta, itnum):
         y0 = y0 
         x, y = cordicrotate(x0, y0, theta, itnum)
     else:
-        theta = -theta
-        x0 = x0
-        y0 = -y0 
+        theta = theta
+        x0 = -x0
+        y0 = y0 
         x, y = cordicrotate(x0, y0, theta, itnum)
-        x = -x
+        #x = -x
     
     return x, y
     
@@ -59,12 +59,12 @@ if __name__ == "__main__":
     x0 = 10
     y0 = 0
     theta = 0
-    angles = np.arange(-4*np.pi, 4*np.pi, step=0.314)
+    angles = np.arange(1*np.pi, 8*np.pi, step=0.1)
     i = 0 
     x = np.zeros(len(angles))
     y = np.zeros(len(angles))
     for i in range(len(angles)):
-          x[i] , y[i] = cordic(x0, y0, angles[i], 32)
+          x[i] , y[i] = cordic(x0, y0, angles[i], 16)
     
     plt.plot(angles, y)
     plt.plot(angles, x)
