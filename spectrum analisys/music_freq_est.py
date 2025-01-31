@@ -5,7 +5,7 @@ from scipy import linalg as la
 #parameters
 N = 512
 p = 4
-Nfft = 4096
+Nfft = 512
 #vars 
 pi = np.pi
 f1 = 50.23
@@ -33,7 +33,7 @@ def music_ps_fft(noise_eigvects, N):
 if __name__=="__main__":
     #generate sequence
     t = np.linspace(0, 2*pi, num=N)
-    x =  0.5*np.random.random(N) + np.sin(f1*t) + 0.6*np.cos(f2*t) 
+    x =  0.5*np.random.random(N) + 3*np.sin(f1*t) + 2*np.cos(f2*t) 
     plt.plot(x)
     plt.show()
 
@@ -58,7 +58,7 @@ if __name__=="__main__":
     n_evects = sort_eigvects[:, p:len(sort_eigvects)]
     print("length of noise eigenvector", len(n_evects))
 
-    Pmusic= music_ps_direct(n_evects, Nfft)
+    Pmusic= music_ps_direct(n_evects, N)
     #Pmusic_fft = music_ps_fft(n_evects ,Nfft)
 
     print("frequencies of stimulus", f1, f2)
