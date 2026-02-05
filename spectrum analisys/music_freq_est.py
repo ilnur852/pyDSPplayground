@@ -24,24 +24,15 @@ def music_ps_direct(noise_eigvects, N):
         music_pseudospectrum = np.append(music_pseudospectrum, Pmu_w) #construct pseudospectrum via appending values
     return 1.0/music_pseudospectrum
 
-def music_ps_fft(noise_eigvects, N):
+def music_ps_fft(x, N):
     sum1 = 0
+    noise_eigvects = eiganal(x, N)
     for u in range(0, len(noise_eigvects[1])):
         sum1 += (abs(np.fft.fft(noise_eigvects[:, u], N)))**2
     return 1/(sum1[:len(sum1)//2])
 
-if __name__=="__main__":
-    #generate sequence
-    t = np.linspace(0, 2*pi, num=N)
-    x =  0.5*np.random.random(N) + 3*np.sin(f1*t) + 2*np.cos(f2*t) 
-    plt.plot(x)
-    plt.show()
-
-    fft_x = abs(np.fft.fft(x, Nfft))
-    fft_x = fft_x[:len(fft_x)//2]
-    plt.plot(fft_x)
-    plt.title("Estimation via DFT")
-
+def eiganal(x, N):
+    x = x[:N-1]
     #find autocorrelations
     conj = np.conj(x)
     flip = conj[::-1] 
@@ -56,23 +47,32 @@ if __name__=="__main__":
     #separating signal and noise subspace eigenvectors
     s_evects = sort_eigvects[0:p]
     n_evects = sort_eigvects[:, p:len(sort_eigvects)]
+    return n_evects
     print("length of noise eigenvector", len(n_evects))
 
-    Pmusic= music_ps_direct(n_evects, N)
-    #Pmusic_fft = music_ps_fft(n_evects ,Nfft)
+
+if __name__=="__main__":
+    #generate sequence
+    t = np.linspace(0, 2*pi, num=N)
+    x =  0.5*np.random.random(N) + 3*np.sin(f1*t) + 2*np.cos(f2*t) 
+    plt.plot(x)
+    plt.show()
+    
+    fftwin = np.kaiser(Nfft,0)
+    fft_x = abs(np.fft.fft(x, Nfft)*fftwin)
+    fft_x = fft_x[:len(fft_x)//2]
+  
+    plt.plot(fft_x)
+    plt.title("Estimation via DFT")
+
+    Pmusic_fft = music_ps_fft(x ,Nfft)
 
     print("frequencies of stimulus", f1, f2)
     print("max's of fft", (np.argsort(fft_x)[::-1][:p//2])*N/Nfft)
-    #print("max's of MUSIC (fft)", (np.argsort(Pmusic_fft)[::-1][:p//2])*N/Nfft)
-    print("max's of MUSIC (direct)", (np.argsort(Pmusic)[::-1][:p//2])/2)
+    print("max's of MUSIC (fft)", (np.argsort(Pmusic_fft)[::-1][:p//2])*N/Nfft)
 
-    
     plt.figure()
-    plt.plot(Pmusic)
-    plt.title("Estimation via MUSIC (direct)")
-    
-    #plt.figure()
-    #plt.plot(Pmusic_fft)
-    #plt.title("Estimation via MUSIC (fft)")
+    plt.plot(Pmusic_fft)
+    plt.title("Estimation via MUSIC (fft)")
 
     plt.show()

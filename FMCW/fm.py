@@ -18,82 +18,45 @@ def triagshape(t, amplitude, delay, freqoffset):
 def FMMOD(shape, N):
     return np.cos(integrator(shape, N)) + np.sin(integrator(shape, N))
 
-N = int(1e4)
-t = np.linspace(0, 50, N)
-a = 0.2
+if __name__ == "__main__":
+    N = int(2**16)
+    t = np.linspace(0, 100, N)
+    a = 0.2
+    Nfft =8192
 
-tri_shape1 = triagshape(t, a, 0.02, 0.40)
-tri_shape2 = triagshape(t, a, 0.65, .40)
-tri_shape3 = triagshape(t, a*.8, 0.552, .41)
-tri_shape4 = triagshape(t, a*.6, 0.555, .41)
+    tri_shape1 = triagshape(t, a, 0.2, 0)
+    tri_shape2 = triagshape(t, a, 1.5, 0)
+    tri_shape3 = triagshape(t, a, 1.5, 0.0)
+    tri_shape4 = triagshape(t, a*.6, 5.555, .41)
 
-plt.plot(tri_shape1)
-plt.plot(tri_shape2)
-#plt.plot(tri_shape3)
-plt.ylabel('Frequency')
-plt.xlabel('time (samples)')
-plt.legend(['сигнал 1','сигнал 2', 'сигнал 3'])
-plt.show()
+    plt.plot(tri_shape1)
+    plt.plot(tri_shape2)
+    #plt.plot(tri_shape3)
+    plt.ylabel('Frequency')
+    plt.xlabel('time (samples)')
+    plt.legend(['сигнал 1','сигнал 2', 'сигнал 3'])
+    plt.show()
 
-s1 = FMMOD(tri_shape1, N)
-s2 = FMMOD(tri_shape2, N)
-s3 = FMMOD(tri_shape3, N)
-s4 = FMMOD(tri_shape4, N)
-'''
-plt.plot(s1)
-plt.sho'w()
-'''
-mixed = s1*s2 + s1*s3 + s1*s4
-'''
-plt.plot(mixed)
-plt.show()
-'''
-b = firwin(64, 0.1)
-mixfilt = np.convolve(b, mixed)
+    s1 = FMMOD(tri_shape1, N)
+    s2 = FMMOD(tri_shape2, N)
+    s3 = FMMOD(tri_shape3, N)
+    s4 = FMMOD(tri_shape4, N)
+    '''
+    plt.plot(s1)
+    plt.sho'w()
+    '''
+    mixed = s1*s2
 
-h, Pxx = periodogram(mixfilt, N, 'flattop', scaling='spectrum')
+    plt.plot(mixed)
+    plt.show()
 
-plt.semilogy(h, Pxx)
-plt.ylim([1e-4, 1e0])
-plt.show()
+    b = firwin(256, 0.1)
+    mixfilt = np.convolve(b, mixed)
 
-pulse = mixfilt >0
+    h, Pxx = periodogram(mixed, Nfft, 'boxcar', scaling='spectrum')
+    mixed2= s1*s3 + 0.01*np.random.randn(N)
+    h2, Pxx2 = periodogram(mixed2, Nfft, 'boxcar', scaling='spectrum')
 
-i = 0
-acc = np.zeros(len(pulse))
-da = np.zeros(len(pulse))
-
-for i in range(len(pulse)-1):
-    if pulse[i+1] == pulse[i]:
-        acc[i] = 0
-    else:
-        acc[i] = 1
-    
-i = 0
-for i in range(len(acc)):
-    da[i] = np.sum(acc[i:i+3142*2])
-
-plt.subplot(411)
-plt.plot(tri_shape1)
-plt.subplot(412)
-plt.plot(mixfilt)
-plt.subplot(413)
-plt.plot(acc)
-plt.subplot(414)
-plt.plot(da)
-plt.show()
-
-l= int(len(da))
-print(np.mean(da))
-
-tri_per = (N/20)*2*np.pi
-print("triangle period", tri_per)
-
-b = firwin(256, 0.001)
-mixfilt_low = np.convolve(b, mixed)
-
-plt.subplot(211)
-plt.plot(mixfilt_low)
-plt.subplot(212)
-plt.plot(tri_shape1)
-plt.show()
+    plt.semilogy(Pxx[1:5000])
+    plt.semilogy(Pxx2[1:5000])
+    plt.show()

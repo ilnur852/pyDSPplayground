@@ -5,9 +5,9 @@ import numpy as np
 import serial 
 import threading
 import time
-import binascii
+
 from fixedpoint import FixedPoint
-import serial.serialutil
+
 import serial.tools
 import serial.tools.list_ports
 from ui_form import Ui_MainWindow
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             if event.is_set():
                 break
             time.sleep(0.05)
-            win.m_ui.label.setText(str(win.m_ui.horizontalScrollBar.value()/1000)) 
+            win.m_ui.label.setText(str(win.m_ui.horizontalScrollBar.value()/1000) + " ; " + str(win.m_ui.horizontalScrollBar.value()*360/1000)) 
             if (sd.in_waiting >= 10):
                 r = sd.read_all()
                 hexval = bytes.hex(r[2:5][::-1])
